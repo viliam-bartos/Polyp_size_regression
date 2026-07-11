@@ -6,7 +6,7 @@
 
 **Continuous polyp size estimation in millimeters from standard monocular colonoscopy video, using depth-corrected physical features and a Random Forest Regressor.**
 
-> **Key Result:** Patient-level Leave-One-Out Cross-Validation (LOOCV) on 42 subjects achieves **MAE = 1.26 mm** with zero data leakage and fixed domain features. In binary classification (< 5 mm vs. ≥ 5 mm), our approach reaches **69.0% Accuracy** and **84.6% Specificity**, surpassing the dataset authors' baseline models.
+> **Key Result:** Patient-level Leave-One-Out Cross-Validation (LOOCV) on 42 subjects achieves **MAE = 1.26 mm**. In binary classification (< 5 mm vs. ≥ 5 mm), our approach reaches **69.0% Accuracy** and **84.6% Specificity**, surpassing the dataset authors' baseline models.
 
 ---
 
@@ -50,7 +50,7 @@ The surrounding healthy mucosa (`depth_bg_mean`) provides a more stable distance
 
 ## Results
 
-### Continuous Regression (LOOCV, N = 42 patients, Zero Data Leakage)
+### Continuous Regression (LOOCV, N = 42 patients)
 
 | Model | MAE (mm) ↓ | RMSE (mm) ↓ | R² ↑ | MAPE (%) ↓ | Pearson r ↑ |
 | :--- | :---: | :---: | :---: | :---: | :---: |
@@ -69,8 +69,7 @@ The surrounding healthy mucosa (`depth_bg_mean`) provides a more stable distance
 | Song et al.: ResNet50 + ZoeN | 0.5 | 64.7% | 64.9% | 71.1% | Frame (N=3858) |
 | Song et al.: Inception V3 + ZoeN | 0.5 | 60.1% | 48.7% | 72.0% | Frame (N=3858) |
 
-> **Important note on evaluation fairness:** The baseline study evaluates on **3,858 individual frames** (pseudoreplication), while we evaluate strictly at the **patient level (N=42)**, which is the clinically correct and more conservative approach.
-
+> **Important note on evaluation fairness:** The baseline study evaluates on **3,858 individual frames**, while we evaluate strictly at the **patient level (N=42)**.
 ## Project Structure
 
 ```
@@ -142,7 +141,7 @@ The Polyp-Size dataset is available from:
 
 ## Usage
 
-### 1. Run Video Segmentation (Aggressive Temporal Filtering)
+### 1. Run Video Segmentation
 
 ```bash
 python src/batch_inference_aggressive.py \
