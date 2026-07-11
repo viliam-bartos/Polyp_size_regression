@@ -176,6 +176,31 @@ python src/polyp_size_classifier.py
 
 The final model uses only **3 fixed domain features** (selected a priori from physical reasoning, not data-driven search): `sqrt_area_px`, `proxy_linear_bg`, `endoscope_hq290I`.
 
+## Limitations
+
+### Endoscope Model as a Feature
+
+One of the three selected features is the **endoscope model** (`endoscope_hq290I`), which acts as a binary flag distinguishing between two Olympus colonoscopes used in the original dataset (CF-HQ290I vs. CF-H290I). While this may seem surprising for a regression model, the physical explanation is straightforward: **different endoscope models have different optical properties** (field of view, focal length, sensor resolution), which directly affect how many pixels a polyp of a given real-world size occupies on the image sensor. The model essentially learns a per-device optical calibration factor.
+
+However, this is a **significant limitation for generalization**:
+
+- The current model has only seen two specific Olympus endoscope models. Applying it to data from a different manufacturer (e.g., Fujifilm, Pentax) or a different Olympus model without retraining or recalibration would likely degrade performance.
+- A hardware-agnostic variant of the model (without endoscope metadata) achieves MAE = 1.46 mm, but with substantially lower explanatory power (R² = 0.161 vs. 0.328).
+- A more robust approach would replace the categorical endoscope identifier with **continuous optical parameters** from the device's technical specification sheet (field of view in degrees, depth of field range), making the model inherently portable across any endoscope.
+
+### Small Dataset Size
+
+With only **42 subjects from a single center** (Nanfang Hospital, Guangzhou), the dataset is too small to draw strong generalization conclusions. The narrow distribution of polyp sizes (most between 3–6 mm, few above 8 mm) further limits the model's ability to reliably estimate larger lesions.
+
+## Future Work
+
+- **Multi-center validation:** We are in communication with a gastroenterologist at **Městská nemocnice Ostrava-Vítkovice** (Czech Republic) to obtain an independent validation cohort recorded with different endoscopic equipment and a European patient population. This will be the first true out-of-distribution test of the pipeline.
+- **Larger and more diverse datasets:** Expanding the training set beyond 42 subjects, ideally with a wider range of polyp sizes (including lesions > 10 mm) and multiple endoscope manufacturers.
+- **Continuous optical calibration:** Replacing the binary endoscope flag with continuous physical parameters (FOV, focal length) from device specification sheets to enable zero-shot deployment on unseen hardware.
+- **End-to-end deep learning regression:** Investigating whether a neural network can be trained to directly predict polyp size in mm from RGB frames, bypassing handcrafted feature extraction.
+
+
+
 ## Acknowledgments and Citations
 
 This project builds upon two key works:
