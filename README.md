@@ -6,8 +6,7 @@
 
 **Continuous polyp size estimation in millimeters from standard monocular colonoscopy video, using depth-corrected physical features and a Random Forest Regressor.**
 
-> **Key Result:** Patient-level Leave-One-Out Cross-Validation (LOOCV) on 42 subjects achieves **MAE = 1.26 mm**. In binary classification (< 5 mm vs. ≥ 5 mm), our approach reaches **69.0% Accuracy** and **84.6% Specificity**, surpassing the dataset authors' baseline models.
-
+> **Key Result:** Patient-level Leave-One-Out Cross-Validation (LOOCV) on 42 subjects achieves **MAE = 1.26 mm**. In binary classification (< 5 mm vs. ≥ 5 mm), our approach reaches **69.0% Accuracy** and **84.6% Specificity**.
 ---
 
 ## Motivation
@@ -44,10 +43,6 @@ Input Video (RGB) ──► DepthPolyp (MiT-B0 Encoder)
               Clinical threshold (≥ 4.4 mm) ──► Screening alert
 ```
 
-### Key Physical Insight
-
-The surrounding healthy mucosa (`depth_bg_mean`) provides a more stable distance reference than the polyp surface itself, because polyps protrude toward the camera. Combined with the apparent diameter in pixels (`sqrt_area_px`) and endoscope optics calibration (`endoscope_model`), this yields a robust size proxy that generalizes across viewing angles.
-
 ## Results
 
 ### Continuous Regression (LOOCV, N = 42 patients)
@@ -69,7 +64,7 @@ The surrounding healthy mucosa (`depth_bg_mean`) provides a more stable distance
 | Song et al.: ResNet50 + ZoeN | 0.5 | 64.7% | 64.9% | 71.1% | Frame (N=3858) |
 | Song et al.: Inception V3 + ZoeN | 0.5 | 60.1% | 48.7% | 72.0% | Frame (N=3858) |
 
-> **Important note on evaluation fairness:** The baseline study evaluates on **3,858 individual frames**, while we evaluate strictly at the **patient level (N=42)**.
+> **Important note on evaluation fairness:** The baseline study evaluates on **3,858 individual frames**, while we evaluate at the **patient level (N=42)**.
 ## Project Structure
 
 ```
@@ -174,7 +169,7 @@ python src/polyp_size_classifier.py
 | **Temporal stability** | `area_variability_std`, `max_sqrt_area_px`, `max_proxy_linear` | Cross-frame consistency measures |
 | **Clinical metadata** | `paris_class_num`, `is_pedunculated`, `patient_age`, `patient_gender_num`, `endoscope_hq290I` | Patient and equipment information |
 
-The final model uses only **3 fixed domain features** (selected a priori from physical reasoning, not data-driven search): `sqrt_area_px`, `proxy_linear_bg`, `endoscope_hq290I`.
+The final model uses only **3 fixed domain features**: `sqrt_area_px`, `proxy_linear_bg`, `endoscope_hq290I`.
 
 ## Limitations
 
